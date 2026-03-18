@@ -46,8 +46,8 @@ POST http://localhost:5000/api/doctor/login
 Content-Type: application/json
 
 {
-  "email": "johndoe@gmail.com",
-  "password": "YasinMemon@10"
+  "email": "zakirshaikh23@gmail.com",
+  "password": "Yasin@10"
 }
 
 ### doctor logout
@@ -107,3 +107,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5OTJiMjk3Z
   "available_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
   "time_slots": ["10:00-12:00", "14:00-16:00"]
 }
+
+### get doctor availability
+GET http://localhost:5000/api/doctor/availability
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YmEyZmU4N2UxYTc2NzBiMzViZWMwNyIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NzM4MTA4ODAsImV4cCI6MTc3Mzg5NzI4MH0.vhAFViIx0NA_eYJH5RYIr9PQuRtxs4u7rpWQ4eeQO5k
+
+###

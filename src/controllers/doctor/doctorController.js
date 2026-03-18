@@ -286,10 +286,32 @@ const updateSchedule = async (req, res) => {
   }
 };
 
+const getAvailability = async (req, res) => {
+  try {
+    const doctorId = req.user.id;
+    const doctor = await Doctor.findById(doctorId);
+
+      if (!doctor) {
+        return res.status(404).json({ message: "Doctor not found." });
+      }
+
+      return res.status(200).json({
+        available_days: doctor.available_days,
+        time_slots: doctor.time_slots,
+      });
+  } catch (error) {
+    console.error("Error fetching availability:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error.", error: error.message });
+  }
+}
+
 export {
   registerDoctor,
   loginDoctor,
   logoutDoctor,
   getAllAppointments,
   updateSchedule,
+  getAvailability,
 };
