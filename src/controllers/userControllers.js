@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import Doctor from "../models/DoctorModel.js";
 import Appointment from "../models/AppointmentModel.js";
+import { oauth2 } from "googleapis/build/src/apis/oauth2/index.js";
+import axios from "axios"
 
 async function UserRegister(req, res) {
   try {
@@ -84,6 +86,54 @@ async function UserLogin(req, res) {
     .json({ message: "User logged in successfully", user, role: "user", token });
 }
 
+async function GoogleLogin(req, res) {
+  try {
+    const {code} = req.body;
+    const googleRes = await exports.oauth2client.getToken(code)
+    oauth2client.setCredentials(googleRes.tokens);
+
+    const userRes = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${googleRes.tokens.access_token}`,
+        }
+      }
+    );
+
+    const { name, email, picture } = userRes.data;
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        fullName: name,
+        email,
+        password: "", // No password for Google users
+        profile_image: picture,
+      });
+    }
+
+    const token = jwt.sign({ id: user._id, role: "user" }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+    // Clear conflicting cookies
+    res.clearCookie("doctorToken");
+    res.clearCookie("adminToken");
+    res
+      .status(200)
+      .cookie("userToken", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
+      })
+      .json({ message: "User logged in with Google successfully", user, role: "user", token });
+      
+  } catch (error) {
+    console.error("Error logging in with Google:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+}
+
 async function GetAllVerifiedDoctors(req, res) {
   try {
     const doctors = await Doctor.find({ verified: "Verified" });
@@ -142,6 +192,7 @@ async function GetMyAppointments(req, res) {
 export {
   UserRegister,
   UserLogin,
+  GoogleLogin,
   GetAllVerifiedDoctors,
   GetVerifiedDoctorsBySpecialization,
   GetMyAppointments,
