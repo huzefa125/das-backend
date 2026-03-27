@@ -307,6 +307,31 @@ const getAvailability = async (req, res) => {
   }
 }
 
+const markVerificationMessageShown = async (req, res) => {
+  try {
+    const doctorId = req.user.id;
+    const doctor = await Doctor.findByIdAndUpdate(
+      doctorId,
+      { verificationMessageShown: true },
+      { new: true }
+    );
+
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found." });
+    }
+
+    return res.status(200).json({
+      message: "Verification message marked as shown.",
+      doctor,
+    });
+  } catch (error) {
+    console.error("Error marking verification message:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error.", error: error.message });
+  }
+};
+
 export {
   registerDoctor,
   loginDoctor,
@@ -314,4 +339,5 @@ export {
   getAllAppointments,
   updateSchedule,
   getAvailability,
+  markVerificationMessageShown,
 };

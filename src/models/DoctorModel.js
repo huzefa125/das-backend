@@ -118,6 +118,10 @@ const DoctorSchema = new Schema(
       enum: ["Pending", "Verified", "Rejected"],
       default: "Pending",
     },
+    verificationMessageShown: {
+      type: Boolean,
+      default: false,
+    },
     isActive: {
       type: Boolean,
       default: false,
