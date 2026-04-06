@@ -2,6 +2,8 @@ import Admin from "../../models/adminModel.js";
 import bcrypt from "bcrypt";
 import Doctor from "../../models/DoctorModel.js";
 import jwt from "jsonwebtoken";
+import sendEmail from "../../utils/sendEmail.js";
+import { emailTemplates } from "../../utils/emailTemplates.js";
 
 async function adminLogin(req, res) {
   try {
@@ -55,15 +57,44 @@ async function ApproveDoctor(req, res) {
   try {
     const { doctorId } = req.params;
     const doctor = await Doctor.findById(doctorId);
+    
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
+
+    // Update verification status
     doctor.verified = "Verified";
     await doctor.save();
+
+    // Send approval email to doctor
+    try {
+      const emailContent = emailTemplates.doctorApproval(doctor.fullName);
+      const emailResult = await sendEmail(
+        doctor.email,
+        `Profile Verification Complete - ${process.env.APP_NAME}`,
+        emailContent
+      );
+
+      if (emailResult.success) {
+        console.log("Approval email sent successfully to:", doctor.email);
+      } else {
+        console.warn("Failed to send approval email:", emailResult.error);
+        // Don't fail approval if email fails, just log it
+      }
+    } catch (emailError) {
+      console.error("Error sending approval email:", emailError);
+      // Don't fail approval if email fails
+    }
+
     return res
       .status(200)
-      .json({ status: true, message: "Doctor approved successfully" });
+      .json({ 
+        status: true, 
+        message: "Doctor approved successfully and notification email sent",
+        doctor
+      });
   } catch (error) {
+    console.error("Error approving doctor:", error);
     return res.status(500).json({ message: "Server error" });
   }
 }

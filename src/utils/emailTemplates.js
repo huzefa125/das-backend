@@ -1,0 +1,320 @@
+/**
+ * Email templates for the Doctor Appointment System
+ */
+
+export const emailTemplates = {
+  /**
+   * User Registration Welcome Email
+   * @param {string} fullName - User's full name
+   * @param {string} appUrl - Application URL
+   * @returns {string} - HTML email template
+   */
+  userWelcome: (fullName, appUrl = process.env.APP_URL) => {
+    return `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <style>
+            body {
+              font-family: 'Arial', sans-serif;
+              background-color: #f4f4f4;
+              margin: 0;
+              padding: 0;
+            }
+            .container {
+              max-width: 600px;
+              margin: 20px auto;
+              background-color: #ffffff;
+              border-radius: 8px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+              overflow: hidden;
+            }
+            .header {
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white;
+              padding: 30px 20px;
+              text-align: center;
+            }
+            .header h1 {
+              margin: 0;
+              font-size: 28px;
+              font-weight: bold;
+            }
+            .content {
+              padding: 30px 20px;
+              color: #333;
+            }
+            .content h2 {
+              color: #667eea;
+              margin-top: 0;
+            }
+            .content p {
+              line-height: 1.6;
+              margin: 15px 0;
+            }
+            .features {
+              background-color: #f9f9f9;
+              padding: 20px;
+              border-radius: 5px;
+              margin: 20px 0;
+            }
+            .features ul {
+              list-style: none;
+              padding: 0;
+              margin: 0;
+            }
+            .features li {
+              padding: 8px 0;
+              border-bottom: 1px solid #e0e0e0;
+            }
+            .features li:last-child {
+              border-bottom: none;
+            }
+            .features li:before {
+              content: "✓ ";
+              color: #667eea;
+              font-weight: bold;
+              margin-right: 10px;
+            }
+            .cta-button {
+              display: inline-block;
+              background-color: #667eea;
+              color: white;
+              padding: 12px 30px;
+              text-decoration: none;
+              border-radius: 5px;
+              margin: 20px 0;
+              font-weight: bold;
+              text-align: center;
+            }
+            .footer {
+              background-color: #f0f0f0;
+              padding: 20px;
+              text-align: center;
+              color: #666;
+              font-size: 12px;
+              border-top: 1px solid #e0e0e0;
+            }
+            .logo {
+              color: #667eea;
+              font-weight: bold;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🏥 Welcome to ${process.env.APP_NAME}</h1>
+            </div>
+            
+            <div class="content">
+              <h2>Hello ${fullName},</h2>
+              
+              <p>Thank you for registering with us! We're excited to have you join our platform.</p>
+              
+              <p>Your account has been successfully created and is ready to use. You can now:</p>
+              
+              <div class="features">
+                <ul>
+                  <li>Search and book appointments with qualified doctors</li>
+                  <li>View your appointment history and upcoming bookings</li>
+                  <li>Manage your medical profile securely</li>
+                  <li>Receive appointment reminders and updates</li>
+                  <li>Get professional healthcare at your convenience</li>
+                </ul>
+              </div>
+              
+              <p>To get started, click the button below to access your dashboard:</p>
+              
+              <center>
+                <a href="${appUrl}/user-dashboard" class="cta-button">Go to Dashboard</a>
+              </center>
+              
+              <p><strong>Your login credentials:</strong></p>
+              <p>Keep your password secure and never share it with anyone.</p>
+              
+              <p>If you have any questions or need assistance, our support team is here to help!</p>
+              
+              <p>Best regards,<br><strong>The ${process.env.APP_NAME} Team</strong></p>
+            </div>
+            
+            <div class="footer">
+              <p>&copy; ${new Date().getFullYear()} ${process.env.APP_NAME}. All rights reserved.</p>
+              <p>You received this email because you registered on our platform.</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+  },
+
+  /**
+   * Doctor Approval/Verification Email
+   * @param {string} fullName - Doctor's full name
+   * @param {string} appUrl - Application URL
+   * @returns {string} - HTML email template
+   */
+  doctorApproval: (fullName, appUrl = process.env.APP_URL) => {
+    return `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <style>
+            body {
+              font-family: 'Arial', sans-serif;
+              background-color: #f4f4f4;
+              margin: 0;
+              padding: 0;
+            }
+            .container {
+              max-width: 600px;
+              margin: 20px auto;
+              background-color: #ffffff;
+              border-radius: 8px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+              overflow: hidden;
+            }
+            .header {
+              background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+              color: white;
+              padding: 30px 20px;
+              text-align: center;
+            }
+            .header h1 {
+              margin: 0;
+              font-size: 28px;
+              font-weight: bold;
+            }
+            .status-badge {
+              display: inline-block;
+              background-color: rgba(255, 255, 255, 0.2);
+              padding: 8px 16px;
+              border-radius: 20px;
+              margin-top: 10px;
+              font-size: 14px;
+            }
+            .content {
+              padding: 30px 20px;
+              color: #333;
+            }
+            .content h2 {
+              color: #10b981;
+              margin-top: 0;
+            }
+            .content p {
+              line-height: 1.6;
+              margin: 15px 0;
+            }
+            .next-steps {
+              background-color: #f0fdf4;
+              padding: 20px;
+              border-left: 4px solid #10b981;
+              border-radius: 5px;
+              margin: 20px 0;
+            }
+            .next-steps h3 {
+              color: #10b981;
+              margin-top: 0;
+            }
+            .next-steps ol {
+              padding-left: 20px;
+            }
+            .next-steps li {
+              margin: 10px 0;
+              line-height: 1.6;
+            }
+            .cta-button {
+              display: inline-block;
+              background-color: #10b981;
+              color: white;
+              padding: 12px 30px;
+              text-decoration: none;
+              border-radius: 5px;
+              margin: 20px 0;
+              font-weight: bold;
+              text-align: center;
+            }
+            .footer {
+              background-color: #f0f0f0;
+              padding: 20px;
+              text-align: center;
+              color: #666;
+              font-size: 12px;
+              border-top: 1px solid #e0e0e0;
+            }
+            .verification-details {
+              background-color: #f9f9f9;
+              padding: 15px;
+              border-radius: 5px;
+              margin: 15px 0;
+              border: 1px solid #e0e0e0;
+            }
+            .verification-details p {
+              margin: 8px 0;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>✅ Profile Verified!</h1>
+              <div class="status-badge">APPROVED</div>
+            </div>
+            
+            <div class="content">
+              <h2>Dear Dr. ${fullName},</h2>
+              
+              <p>Congratulations! Your profile has been successfully verified by our admin team.</p>
+              
+              <div class="verification-details">
+                <p><strong>Verification Status:</strong> ✓ Approved</p>
+                <p><strong>Verified On:</strong> ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                <p><strong>Your Profile:</strong> Active and visible to patients</p>
+              </div>
+              
+              <p>You can now fully utilize the platform to connect with patients and manage your appointments.</p>
+              
+              <div class="next-steps">
+                <h3>Next Steps:</h3>
+                <ol>
+                  <li>Log in to your doctor dashboard</li>
+                  <li>Complete your profile details (if needed)</li>
+                  <li>Set your availability and consultation fees</li>
+                  <li>Start receiving appointment requests from patients</li>
+                  <li>Manage appointments and patient communications</li>
+                </ol>
+              </div>
+              
+              <p>Click below to access your doctor dashboard:</p>
+              
+              <center>
+                <a href="${appUrl}/doctor-dashboard" class="cta-button">Go to Doctor Dashboard</a>
+              </center>
+              
+              <p><strong>Important Reminders:</strong></p>
+              <ul>
+                <li>Ensure your profile information is accurate and up-to-date</li>
+                <li>Update your availability regularly</li>
+                <li>Respond to appointment requests promptly</li>
+                <li>Maintain professional communication with patients</li>
+              </ul>
+              
+              <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
+              
+              <p>Best regards,<br><strong>The ${process.env.APP_NAME} Admin Team</strong></p>
+            </div>
+            
+            <div class="footer">
+              <p>&copy; ${new Date().getFullYear()} ${process.env.APP_NAME}. All rights reserved.</p>
+              <p>This is an automated verification confirmation email.</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+  },
+};
+
+export default emailTemplates;

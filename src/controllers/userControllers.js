@@ -6,6 +6,8 @@ import Doctor from "../models/DoctorModel.js";
 import Appointment from "../models/AppointmentModel.js";
 import axios from "axios"
 import { OAuth2Client } from "google-auth-library";
+import sendEmail from "../utils/sendEmail.js";
+import { emailTemplates } from "../utils/emailTemplates.js";
 
 async function UserRegister(req, res) {
   try {
@@ -29,6 +31,26 @@ async function UserRegister(req, res) {
     });
     console.log("user registration token:", token);
 
+    // Send welcome email
+    try {
+      const emailContent = emailTemplates.userWelcome(fullName);
+      const emailResult = await sendEmail(
+        email,
+        `Welcome to ${process.env.APP_NAME}!`,
+        emailContent
+      );
+      
+      if (emailResult.success) {
+        console.log("Welcome email sent successfully to:", email);
+      } else {
+        console.warn("Failed to send welcome email:", emailResult.error);
+        // Don't fail registration if email fails, just log it
+      }
+    } catch (emailError) {
+      console.error("Error sending welcome email:", emailError);
+      // Don't fail registration if email fails
+    }
+
     // Clear conflicting cookies
     res.clearCookie("doctorToken");
     res.clearCookie("adminToken");
@@ -45,6 +67,7 @@ async function UserRegister(req, res) {
       .json({ message: "User registered successfully", user: UserModel, token });
   } catch (error) {
     console.error("Error registering user:", error);
+    return res.status(500).json({ message: "Server error during registration" });
   }
 }
 
